@@ -35,6 +35,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import mohamad.hoseini.catapi.R
 import mohamad.hoseini.catapi.domain.model.CatBreed
 import mohamad.hoseini.catapi.ui.theme.lightFont
@@ -70,29 +72,39 @@ fun CatBreedListScreen(
 
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(21.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
 
-            items(
-                breeds.itemCount,
-                key = { index -> breeds[index]?.id!! }
-            ) { index ->
-                val breed = breeds[index]
-                breed?.let {
-                    BreedItem(
-                        breed,
-                        onBreedClicked = {
-                            navigateToBreedDetails(breed.breedId)
-                        }
-                    )
+
+        SwipeRefresh(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            state = rememberSwipeRefreshState(state.isRefreshing),
+            onRefresh = {onBreedsNeedRefresh()}
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .padding(21.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                items(
+                    breeds.itemCount,
+                    key = { index -> breeds[index]?.id!! }
+                ) { index ->
+                    val breed = breeds[index]
+                    breed?.let {
+                        BreedItem(
+                            breed,
+                            onBreedClicked = {
+                                navigateToBreedDetails(breed.breedId)
+                            }
+                        )
+                    }
+
                 }
 
             }
-
         }
 
     }
@@ -142,7 +154,7 @@ fun BreedItem(breed: CatBreed, onBreedClicked: () -> Unit) {
                 color = colorResource(R.color.accentColor),
                 fontFamily = lightFont,
                 fontSize = 13.sp,
-                style = TextStyle(textAlign = TextAlign.Justify,),
+                style = TextStyle(textAlign = TextAlign.Justify),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 lineHeight = 20.sp
