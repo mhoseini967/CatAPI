@@ -10,6 +10,7 @@ import java.util.Date
 fun CatBreedEntity.toDomain(): CatBreed {
     return CatBreed(
         id = id,
+        breedId = breedId,
         name = name,
         description = description,
         temperaments = temperament.split(",").map { it.trim() },
@@ -21,13 +22,14 @@ fun CatBreedEntity.toDomain(): CatBreed {
         affectionLevel = affectionLevel,
         childFriendly = childFriendly,
         wikipediaUrl = wikipediaUrl,
-        imageUrl = "${AppConstants.IMAGE_BASE_URL}${imageId}.jpg",
+        imageUrl = imageId?.let { "${AppConstants.IMAGE_BASE_URL}${imageId}.jpg" },
     )
 }
 
 fun CatBreedDto.toEntity(): CatBreedEntity {
     return CatBreedEntity(
-        id = id,
+        id = 0,
+        breedId = breedId,
         name = name,
         description = description,
         temperament = temperament,

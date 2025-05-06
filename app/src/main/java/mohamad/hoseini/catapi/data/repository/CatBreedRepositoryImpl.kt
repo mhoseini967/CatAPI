@@ -4,9 +4,12 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import mohamad.hoseini.catapi.constants.AppConstants
 import mohamad.hoseini.catapi.data.local.database.dao.CatBreedDao
+import mohamad.hoseini.catapi.data.mapper.toDomain
 import mohamad.hoseini.catapi.data.mapper.toEntity
 import mohamad.hoseini.catapi.data.remote.api.CatBreedApi
 import mohamad.hoseini.catapi.domain.model.CatBreed
@@ -24,13 +27,19 @@ class CatBreedRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = AppConstants.CAT_BREEDS_PAGE_SIZE,
-                enablePlaceholders = false
+                enablePlaceholders = false,
+                initialLoadSize = 10,
             ),
             remoteMediator = CatBreedRemoteMediator(catBreedApi, catBreedDao),
             pagingSourceFactory = {
-                CatBreedPagingSource(catBreedDao)
+                catBreedDao.getCatBreedsPaginated()
             }
         ).flow
+            .map { pagingData ->
+                pagingData.map { catBreedEntity ->
+                    catBreedEntity.toDomain()
+                }
+            }
     }
 
     override suspend fun refreshCatBreeds(): Result<Unit> {

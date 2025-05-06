@@ -3,7 +3,8 @@ package mohamad.hoseini.catapi.data.remote.dto
 import com.google.gson.annotations.SerializedName
 
 data class CatBreedDto(
-    val id: String,
+    @SerializedName("id")
+    val breedId: String,
     val name: String,
     val description: String,
     val temperament: String,
@@ -20,9 +21,9 @@ data class CatBreedDto(
     @SerializedName("child_friendly")
     val childFriendly: Int,
     @SerializedName("wikipedia_url")
-    val wikipediaUrl: String,
+    val wikipediaUrl: String?,
     @SerializedName("reference_image_id")
-    val imageId: String
+    val imageId: String?
 )
 
 data class Weight(
