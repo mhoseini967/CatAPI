@@ -38,10 +38,10 @@ class CatBreedRemoteMediator(
             val response = catBreedApi.getBreeds(page)
             val breeds = if(response.isSuccessful) response.body() else emptyList()
 
-            if (loadType == LoadType.REFRESH) {
-                catBreedDao.clearAll()
-            }
             if(!breeds.isNullOrEmpty()){
+                if (loadType == LoadType.REFRESH) {
+                    catBreedDao.clearAll()
+                }
                 catBreedDao.insertAll(breeds.map { it.toEntity() })
             }
 

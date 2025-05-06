@@ -1,5 +1,6 @@
 package mohamad.hoseini.catapi.ui.feature.breeds
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,11 +20,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +51,23 @@ fun CatBreedListRoute(
     viewModel: BreedsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.event
+            .collect { event ->
+                when (event) {
+                    is BreedsEvent.ShowMessage -> Toast.makeText(
+                        context,
+                        event.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    null -> TODO()
+                }
+
+            }
+    }
 
     CatBreedListScreen(
         state = state,
@@ -79,7 +99,7 @@ fun CatBreedListScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
             state = rememberSwipeRefreshState(state.isRefreshing),
-            onRefresh = {onBreedsNeedRefresh()}
+            onRefresh = { onBreedsNeedRefresh() }
         ) {
             LazyColumn(
                 modifier = Modifier
@@ -174,7 +194,8 @@ fun CountryFlag(countryCode: String) {
     Text(
         text = "$flagEmoji $countryName",
         fontFamily = lightFont,
-        fontSize = 11.sp,
+        fontSize = 10.sp,
+        overflow = TextOverflow.Ellipsis,
         modifier = Modifier
             .background(
                 color = colorResource(R.color.inputColor),

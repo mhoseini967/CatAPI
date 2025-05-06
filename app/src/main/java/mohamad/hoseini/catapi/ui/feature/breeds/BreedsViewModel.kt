@@ -39,8 +39,17 @@ class BreedsViewModel @Inject constructor(
         viewModelScope.launch {
             refreshCatBreedsUseCase()
                 .onStart { updateState { copy(isRefreshing = true) } }
-                .catch { sendEvent(BreedsEvent.ShowMessage(it.message.toString())) }
                 .collect {
+                    it.fold(
+                        onSuccess = {},
+                        onFailure = { exception: Throwable ->
+                            sendEvent(
+                                BreedsEvent.ShowMessage(
+                                    exception.message.toString()
+                                )
+                            )
+                        }
+                    )
                     updateState { copy(isRefreshing = false) }
                 }
         }
