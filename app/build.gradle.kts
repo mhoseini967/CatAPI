@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.constraintlayout.compose)
@@ -113,4 +114,5 @@ dependencies {
 
     implementation (libs.retrofit)
     implementation (libs.retrofit.converter.gson)
+    implementation (libs.androidx.navigation.compose)
 }
