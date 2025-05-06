@@ -17,7 +17,8 @@ import java.io.IOException
 @OptIn(ExperimentalPagingApi::class)
 class CatBreedRemoteMediator(
     private val catBreedApi: CatBreedApi,
-    private val catBreedDao: CatBreedDao
+    private val catBreedDao: CatBreedDao,
+    private val searchFilter: String = ""
 ) : RemoteMediator<Int, CatBreedEntity>() {
 
     override suspend fun load(
@@ -35,10 +36,18 @@ class CatBreedRemoteMediator(
             }
             Timber.d("Load breeds page: $page")
 
-            val response = catBreedApi.getBreeds(page)
-            val breeds = if(response.isSuccessful) response.body() else emptyList()
+            val response = if (searchFilter.isEmpty()) {
+                catBreedApi.getBreeds(page, AppConstants.CAT_BREEDS_PAGE_SIZE)
+            } else {
+                catBreedApi.searchBreeds(
+                    page,
+                    AppConstants.CAT_BREEDS_PAGE_SIZE,
+                    searchFilter = searchFilter
+                )
+            }
+            val breeds = if (response.isSuccessful) response.body() else emptyList()
 
-            if(!breeds.isNullOrEmpty()){
+            if (!breeds.isNullOrEmpty()) {
                 if (loadType == LoadType.REFRESH) {
                     catBreedDao.clearAll()
                 }

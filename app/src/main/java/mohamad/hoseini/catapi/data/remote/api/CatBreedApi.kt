@@ -11,4 +11,11 @@ interface CatBreedApi {
         @Query("page") page: Int = 0,
         @Query("limit") limit: Int = 10
     ): Response<List<CatBreedDto>>
+
+    @GET("v1/breeds/search")
+    suspend fun searchBreeds(
+        @Query("page") page: Int = 0,
+        @Query("limit") limit: Int = 10,
+        @Query("q") searchFilter: String
+    ): Response<List<CatBreedDto>>
 }

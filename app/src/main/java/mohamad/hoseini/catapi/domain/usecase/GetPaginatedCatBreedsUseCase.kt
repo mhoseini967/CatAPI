@@ -12,9 +12,9 @@ class GetPaginatedCatBreedsUseCase @Inject constructor(
     dispatcherProvider: DispatcherProvider,
     private val catBreedRepository: CatBreedRepository
 ) :
-    BaseUseCase<Unit, Flow<PagingData<CatBreed>>>(dispatcherProvider) {
-    override suspend fun execute(params: Unit): Flow<PagingData<CatBreed>> {
-        return catBreedRepository.getCatBreedsPaged()
+    BaseUseCase<String, Flow<PagingData<CatBreed>>>(dispatcherProvider) {
+    override suspend fun execute(params: String): Flow<PagingData<CatBreed>> {
+        return catBreedRepository.getCatBreedsPaged(params)
     }
 
 }

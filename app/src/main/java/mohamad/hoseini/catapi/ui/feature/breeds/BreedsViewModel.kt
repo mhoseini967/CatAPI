@@ -2,7 +2,11 @@ package mohamad.hoseini.catapi.ui.feature.breeds
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import mohamad.hoseini.catapi.base.BaseViewModel
@@ -16,22 +20,47 @@ class BreedsViewModel @Inject constructor(
     private val getPaginatedCatBreedsUseCase: GetPaginatedCatBreedsUseCase
 ) :
     BaseViewModel<BreedsIntent, BreedsState, BreedsEvent>(BreedsState()) {
+    private val searchQuery = MutableStateFlow("")
 
     init {
-        observePaginatedBreeds()
+        observePaginatedCatBreedsWithQuery()
         refreshBreeds()
     }
 
     override fun handleIntent(intent: BreedsIntent) {
         when (intent) {
             BreedsIntent.Refresh -> refreshBreeds()
+            is BreedsIntent.SetSearchingMode -> {
+                updateState { copy(searchMode = intent.searchingMode) }
+                if (!intent.searchingMode) {
+                    searchBreed("")
+                }
+            }
+
+            is BreedsIntent.SearchBreed -> searchBreed(intent.text)
         }
     }
 
-    private fun observePaginatedBreeds() {
+    private fun searchBreed(text: String) {
+        updateState { copy(searchingText = text) }
+        searchQuery.value = text
+    }
+
+    private fun observePaginatedCatBreedsWithQuery() {
         viewModelScope.launch {
-            val flow = getPaginatedCatBreedsUseCase()
-            updateState { copy(breedsPagingFlow = flow) }
+            searchQuery
+                .debounce(300)
+                .distinctUntilChanged()
+                .onEach { updateState { copy(searchLoading = true) } }
+                .collectLatest { query ->
+                    val flow = getPaginatedCatBreedsUseCase(query)
+                    updateState {
+                        copy(
+                            breedsPagingFlow = flow,
+                            searchLoading = false
+                        )
+                    }
+                }
         }
     }
 

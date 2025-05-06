@@ -7,5 +7,8 @@ import mohamad.hoseini.catapi.domain.model.CatBreed
 
 data class BreedsState(
     val breedsPagingFlow: Flow<PagingData<CatBreed>> = emptyFlow(),
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val searchLoading: Boolean = false,
+    val searchMode: Boolean = false,
+    val searchingText: String= "",
 )

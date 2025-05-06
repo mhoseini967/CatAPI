@@ -4,6 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.filter
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -23,22 +24,22 @@ class CatBreedRepositoryImpl @Inject constructor(
 ) : CatBreedRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getCatBreedsPaged(): Flow<PagingData<CatBreed>> {
+    override fun getCatBreedsPaged(searchFilter: String): Flow<PagingData<CatBreed>> {
         return Pager(
             config = PagingConfig(
                 pageSize = AppConstants.CAT_BREEDS_PAGE_SIZE,
                 enablePlaceholders = false,
                 initialLoadSize = 10,
             ),
-            remoteMediator = CatBreedRemoteMediator(catBreedApi, catBreedDao),
+            remoteMediator = CatBreedRemoteMediator(catBreedApi, catBreedDao, searchFilter),
             pagingSourceFactory = {
-                catBreedDao.getCatBreedsPaginated()
+                catBreedDao.getCatBreedsPaginated(searchFilter)
             }
         ).flow
             .map { pagingData ->
-                pagingData.map { catBreedEntity ->
-                    catBreedEntity.toDomain()
-                }
+                pagingData
+                    .map { it.toDomain() }
+                    .distinctById()
             }
     }
 
@@ -60,6 +61,13 @@ class CatBreedRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    private fun PagingData<CatBreed>.distinctById(): PagingData<CatBreed> {
+        val seenIds = mutableSetOf<String>()
+        return this.filter { cat ->
+            seenIds.add(cat.breedId)
         }
     }
 }
