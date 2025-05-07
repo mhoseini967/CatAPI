@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -63,6 +64,7 @@ import java.util.Locale
 
 @Composable
 fun CatBreedListRoute(
+    navController: NavController,
     viewModel: BreedsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -86,7 +88,7 @@ fun CatBreedListRoute(
 
     CatBreedListScreen(
         state = state,
-        navigateToBreedDetails = {},
+        navigateToBreedDetails = { id -> navController.navigate("breed_details/${id}") },
         onBreedsNeedRefresh = {
             viewModel.handleIntent(BreedsIntent.Refresh)
         },
@@ -187,8 +189,8 @@ fun BreedItem(breed: CatBreed, onBreedClicked: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16 / 9f)
-                    .background(color = colorResource(R.color.inputColor))
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(color = colorResource(R.color.inputColor)),
                 model = breed.imageUrl,
                 contentDescription = breed.name,
                 contentScale = ContentScale.FillWidth,
@@ -313,7 +315,12 @@ fun SearchToolbar(
             )
 
             if (searchLoading) {
-                CircularProgressIndicator(Modifier.size(20.dp).padding(end = 8.dp), strokeWidth = 1.5.dp)
+                CircularProgressIndicator(
+                    Modifier
+                        .size(20.dp)
+                        .padding(end = 8.dp),
+                    strokeWidth = 1.5.dp
+                )
             } else {
                 Box(
                     Modifier
