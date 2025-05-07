@@ -159,8 +159,6 @@ fun BreedDetailsScreen(
                             fontFamily = lightFont,
                             fontSize = 13.sp,
                             style = TextStyle(textAlign = TextAlign.Justify),
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis,
                             lineHeight = 20.sp
 
                         )
