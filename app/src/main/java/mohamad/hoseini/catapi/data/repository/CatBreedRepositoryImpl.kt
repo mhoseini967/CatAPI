@@ -43,6 +43,10 @@ class CatBreedRepositoryImpl @Inject constructor(
             }
     }
 
+    override fun getCatBreedById(breedId: String): Flow<CatBreed> {
+        return catBreedDao.getCatBreedById(breedId).map { it.toDomain() }
+    }
+
     override suspend fun refreshCatBreeds(): Result<Unit> {
         return try {
             val response = catBreedApi.getBreeds()

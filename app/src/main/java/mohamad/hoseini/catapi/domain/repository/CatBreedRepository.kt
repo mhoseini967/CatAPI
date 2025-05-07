@@ -6,5 +6,6 @@ import mohamad.hoseini.catapi.domain.model.CatBreed
 
 interface CatBreedRepository {
     fun getCatBreedsPaged(searchFilter: String = "") : Flow<PagingData<CatBreed>>
+    fun getCatBreedById(breedId: String): Flow<CatBreed>
     suspend fun refreshCatBreeds() : Result<Unit>
 }
