@@ -1,9 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidHilt)
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
@@ -18,6 +26,9 @@ android {
         versionName = "1.0"
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val apiKey = localProperties["API_KEY"] ?: "default_api_key_value"
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -82,6 +93,7 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.constraintlayout.compose)
@@ -102,4 +114,5 @@ dependencies {
 
     implementation (libs.retrofit)
     implementation (libs.retrofit.converter.gson)
+    implementation (libs.androidx.navigation.compose)
 }
