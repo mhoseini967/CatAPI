@@ -80,7 +80,7 @@ fun BreedDetailsRoute(
             }
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(breedId) {
         viewModel.handleIntent(BreedDetailsIntent.FetchBreedDetails(breedId))
     }
 

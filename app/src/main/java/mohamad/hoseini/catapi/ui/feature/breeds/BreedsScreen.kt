@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -185,16 +186,27 @@ fun BreedItem(breed: CatBreed, onBreedClicked: () -> Unit) {
     ) {
 
         Column(Modifier.padding(21.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            GlideImage(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16 / 9f)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(color = colorResource(R.color.inputColor)),
-                model = breed.imageUrl,
-                contentDescription = breed.name,
-                contentScale = ContentScale.FillWidth,
-            )
+            Box(contentAlignment = Alignment.BottomEnd) {
+
+                GlideImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16 / 9f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(color = colorResource(R.color.inputColor)),
+                    model = breed.imageUrl,
+                    contentDescription = breed.name,
+                    contentScale = ContentScale.FillWidth,
+                )
+                if (breed.isFavorite) {
+                    Image(
+                        modifier = Modifier.padding(8.dp),
+                        painter = painterResource(R.drawable.ic_liked),
+                        contentDescription = null
+                    )
+                }
+
+            }
 
 
             Row(
