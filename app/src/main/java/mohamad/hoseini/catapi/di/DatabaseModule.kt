@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import mohamad.hoseini.catapi.data.local.database.AppDatabase
 import mohamad.hoseini.catapi.data.local.database.dao.CatBreedDao
+import mohamad.hoseini.catapi.data.local.database.dao.FavoriteBreedDao
 import javax.inject.Singleton
 
 @Module
@@ -17,6 +18,11 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideCatBreedDao(appDatabase: AppDatabase): CatBreedDao = appDatabase.catBreedDao()
+
+    @Singleton
+    @Provides
+    fun provideFavoriteBreedDao(appDatabase: AppDatabase): FavoriteBreedDao = appDatabase.favoriteBreedDao()
+
 
     @Singleton
     @Provides

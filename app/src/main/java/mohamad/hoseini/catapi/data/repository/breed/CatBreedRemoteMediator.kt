@@ -1,4 +1,4 @@
-package mohamad.hoseini.catapi.data.repository
+package mohamad.hoseini.catapi.data.repository.breed
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -9,7 +9,6 @@ import mohamad.hoseini.catapi.data.local.database.dao.CatBreedDao
 import mohamad.hoseini.catapi.data.local.database.entity.CatBreedEntity
 import mohamad.hoseini.catapi.data.mapper.toEntity
 import mohamad.hoseini.catapi.data.remote.api.CatBreedApi
-import mohamad.hoseini.catapi.domain.model.CatBreed
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException

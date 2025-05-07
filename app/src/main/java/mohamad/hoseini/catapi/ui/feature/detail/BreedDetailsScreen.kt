@@ -46,6 +46,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import mohamad.hoseini.catapi.R
 import mohamad.hoseini.catapi.domain.model.CatBreed
 import mohamad.hoseini.catapi.ui.component.DashedDivider
+import mohamad.hoseini.catapi.ui.component.Like
 import mohamad.hoseini.catapi.ui.component.PrimaryButton
 import mohamad.hoseini.catapi.ui.component.Toolbar
 import mohamad.hoseini.catapi.ui.feature.breeds.CountryFlag
@@ -89,6 +90,9 @@ fun BreedDetailsRoute(
             BrowserUtils.openUrl(context, it)
         }, onBackClicked = {
             navController.popBackStack()
+        },
+        onToggleLike = {
+            viewModel.handleIntent(BreedDetailsIntent.ToggleLike)
         }
     )
 }
@@ -97,14 +101,15 @@ fun BreedDetailsRoute(
 fun BreedDetailsScreen(
     state: BreedDetailsState,
     onOpenWikipediaUrl: (url: String) -> Unit,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onToggleLike: () -> Unit
 ) {
     val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
             Toolbar(onBackClicked = onBackClicked) {
-
+                Like(state.breed?.isFavorite ?: false, onLikeToggle = { onToggleLike() })
             }
         }
     ) { innerPadding ->
