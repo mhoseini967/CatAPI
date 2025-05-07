@@ -3,26 +3,25 @@ package mohamad.hoseini.catapi.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import dagger.hilt.android.AndroidEntryPoint
+import mohamad.hoseini.catapi.data.local.preferences.SharedPreferencesDataSource
 import mohamad.hoseini.catapi.ui.navigation.CatNavHost
 import mohamad.hoseini.catapi.ui.theme.CatAPITheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var sharedPreferencesDataSource: SharedPreferencesDataSource
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        Todo read dark theme from shared preferences
+
         setContent {
-            CatAPITheme(darkTheme = false) {
+            val settings by sharedPreferencesDataSource.settingChangesFlow.collectAsState()
+            CatAPITheme(darkTheme = settings.isDarkMode) {
                 CatNavHost()
             }
         }
