@@ -14,6 +14,7 @@ data class CatBreed(
     val affectionLevel : Int,
     val childFriendly: Int,
     val wikipediaUrl : String?,
-    val imageUrl: String?
+    val imageUrl: String?,
+    val isFavorite: Boolean = false
 )
 

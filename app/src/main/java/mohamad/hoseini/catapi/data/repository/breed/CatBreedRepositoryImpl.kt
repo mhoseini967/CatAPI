@@ -1,4 +1,4 @@
-package mohamad.hoseini.catapi.data.repository
+package mohamad.hoseini.catapi.data.repository.breed
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
