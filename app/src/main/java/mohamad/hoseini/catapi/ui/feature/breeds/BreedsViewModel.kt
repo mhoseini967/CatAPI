@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import mohamad.hoseini.catapi.base.BaseViewModel
+import mohamad.hoseini.catapi.data.local.preferences.SharedPreferencesDataSource
 import mohamad.hoseini.catapi.domain.usecase.GetPaginatedCatBreedsUseCase
 import mohamad.hoseini.catapi.domain.usecase.RefreshCatBreedsUseCase
 import javax.inject.Inject
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class BreedsViewModel @Inject constructor(
     private val refreshCatBreedsUseCase: RefreshCatBreedsUseCase,
-    private val getPaginatedCatBreedsUseCase: GetPaginatedCatBreedsUseCase
+    private val getPaginatedCatBreedsUseCase: GetPaginatedCatBreedsUseCase,
+    private val sharedPreferencesDataSource: SharedPreferencesDataSource
 ) :
     BaseViewModel<BreedsIntent, BreedsState, BreedsEvent>(BreedsState()) {
     private val searchQuery = MutableStateFlow("")
@@ -25,6 +27,7 @@ class BreedsViewModel @Inject constructor(
     init {
         observePaginatedCatBreedsWithQuery()
         refreshBreeds()
+        observeThemeSettings()
     }
 
     override fun handleIntent(intent: BreedsIntent) {
@@ -38,6 +41,24 @@ class BreedsViewModel @Inject constructor(
             }
 
             is BreedsIntent.SearchBreed -> searchBreed(intent.text)
+            BreedsIntent.ToggleTheme -> toggleTheme()
+        }
+    }
+
+    private fun observeThemeSettings() {
+        viewModelScope.launch {
+            sharedPreferencesDataSource.settingChangesFlow
+                .collect{
+                    updateState { copy(isDarkMode = it.isDarkMode) }
+                }
+        }
+    }
+
+    private fun toggleTheme() {
+        viewModelScope.launch {
+            val currentSetting = sharedPreferencesDataSource.getSettings()
+            val newTheme = !currentSetting.isDarkMode
+            sharedPreferencesDataSource.saveSettings(currentSetting.copy(isDarkMode = newTheme))
         }
     }
 

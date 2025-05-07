@@ -220,7 +220,7 @@ fun TagItem(tag: String) {
             .padding(horizontal = 8.dp, vertical = 3.dp)
             .wrapContentWidth(),
         fontFamily = lightFont,
-        color = Color.Black,
+        color = MaterialTheme.colorScheme.onBackground,
     )
 }
 
@@ -252,7 +252,7 @@ fun KeyValueInformation(key: String, value: String) {
             key,
             fontFamily = lightFont,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.onBackground
         )
         DashedDivider(
             color = colorResource(R.color.accentColor),
@@ -263,7 +263,7 @@ fun KeyValueInformation(key: String, value: String) {
             value,
             fontFamily = lightFont,
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.onBackground
         )
 
     }

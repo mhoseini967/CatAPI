@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -48,7 +49,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -98,6 +98,9 @@ fun CatBreedListRoute(
         },
         onChangingSearchMode = {
             viewModel.handleIntent(BreedsIntent.SetSearchingMode(it))
+        },
+        onThemeToggled = {
+            viewModel.handleIntent(BreedsIntent.ToggleTheme)
         }
     )
 }
@@ -110,6 +113,7 @@ fun CatBreedListScreen(
     onBreedsNeedRefresh: () -> Unit,
     onSearchBreed: (text: String) -> Unit,
     onChangingSearchMode: (isSearching: Boolean) -> Unit,
+    onThemeToggled: () -> Unit
 ) {
     val breeds = state.breedsPagingFlow.collectAsLazyPagingItems()
     Scaffold(
@@ -126,9 +130,9 @@ fun CatBreedListScreen(
 
             AnimatedVisibility(!state.searchMode) {
                 HomeToolbar(
-                    isDark = false,
+                    isDark = state.isDarkMode,
                     onSearchClicked = { onChangingSearchMode(true) },
-                    onThemeToggled = {}
+                    onThemeToggled = onThemeToggled
                 )
             }
         }
@@ -240,7 +244,7 @@ fun BreedItem(breed: CatBreed, onBreedClicked: () -> Unit) {
 fun HomeToolbar(
     isDark: Boolean,
     onSearchClicked: () -> Unit,
-    onThemeToggled: (isDark: Boolean) -> Unit
+    onThemeToggled: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -255,10 +259,20 @@ fun HomeToolbar(
             Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .clickable { onThemeToggled(!isDark) },
+                .clickable { onThemeToggled() },
             contentAlignment = Alignment.Center
         ) {
-            Image(painter = painterResource(R.drawable.ic_sun), contentDescription = null)
+            Image(
+                painter = painterResource(
+                    if (isDark) {
+                        R.drawable.ic_sun
+                    } else {
+                        R.drawable.ic_moon
+                    }
+                ),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+            )
         }
         Text(stringResource(R.string.app_name), fontFamily = mediumFont)
         Box(
@@ -268,7 +282,11 @@ fun HomeToolbar(
                 .clickable { onSearchClicked() },
             contentAlignment = Alignment.Center
         ) {
-            Image(painter = painterResource(R.drawable.ic_search), contentDescription = null)
+            Image(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+            )
         }
     }
 

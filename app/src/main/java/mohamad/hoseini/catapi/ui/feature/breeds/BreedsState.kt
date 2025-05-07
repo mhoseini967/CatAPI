@@ -11,4 +11,5 @@ data class BreedsState(
     val searchLoading: Boolean = false,
     val searchMode: Boolean = false,
     val searchingText: String= "",
+    val isDarkMode: Boolean = false
 )
