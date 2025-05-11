@@ -87,6 +87,10 @@ fun CatBreedListRoute(
             }
     }
 
+    LaunchedEffect(true) {
+        viewModel.handleIntent(BreedsIntent.FetchData)
+    }
+
     CatBreedListScreen(
         state = state,
         navigateToBreedDetails = { id -> navController.navigate("breed_details/${id}") },
