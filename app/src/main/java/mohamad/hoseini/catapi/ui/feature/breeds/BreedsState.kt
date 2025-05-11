@@ -10,6 +10,6 @@ data class BreedsState(
     val isRefreshing: Boolean = false,
     val searchLoading: Boolean = false,
     val searchMode: Boolean = false,
-    val searchingText: String= "",
+    val searchingText: String = "",
     val isDarkMode: Boolean = false
 )

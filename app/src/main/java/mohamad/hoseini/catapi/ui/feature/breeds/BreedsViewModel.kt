@@ -24,11 +24,6 @@ class BreedsViewModel @Inject constructor(
     BaseViewModel<BreedsIntent, BreedsState, BreedsEvent>(BreedsState()) {
     private val searchQuery = MutableStateFlow("")
 
-    init {
-        observePaginatedCatBreedsWithQuery()
-        refreshBreeds()
-        observeThemeSettings()
-    }
 
     override fun handleIntent(intent: BreedsIntent) {
         when (intent) {
@@ -42,13 +37,20 @@ class BreedsViewModel @Inject constructor(
 
             is BreedsIntent.SearchBreed -> searchBreed(intent.text)
             BreedsIntent.ToggleTheme -> toggleTheme()
+            BreedsIntent.FetchData -> fetchData()
         }
+    }
+
+    private fun fetchData() {
+        observePaginatedCatBreedsWithQuery()
+        refreshBreeds()
+        observeThemeSettings()
     }
 
     private fun observeThemeSettings() {
         viewModelScope.launch {
             sharedPreferencesDataSource.settingChangesFlow
-                .collect{
+                .collect {
                     updateState { copy(isDarkMode = it.isDarkMode) }
                 }
         }
@@ -59,6 +61,7 @@ class BreedsViewModel @Inject constructor(
             val currentSetting = sharedPreferencesDataSource.getSettings()
             val newTheme = !currentSetting.isDarkMode
             sharedPreferencesDataSource.saveSettings(currentSetting.copy(isDarkMode = newTheme))
+            updateState { copy(isDarkMode = newTheme) }
         }
     }
 
