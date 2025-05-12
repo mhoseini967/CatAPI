@@ -1,11 +1,10 @@
 # Cat Breeds Android Application
 
-This is an Android application that interacts with [The Cat API](https://thecatapi.com/) to display cat breeds, their details, and images. The app is designed with modern Android development tools and follows best practices for architecture, offline-first behavior, and dependency injection.
+This is an Android application that interacts with [The Cat API](https://thecatapi.com/) to display cat breeds, their details, and images. The app is designed with modern Android development tools and follows best practices for architecture, offline-first behavior, jetpack-compose, and dependency injection.
 
 ## Contact Information
 - Developer: Mohamad Hoseini
 - Email: Mhoseini967@gmail.com
-- PhoneNumber: +989363717023
 
 
 ## ScreenShots
@@ -80,7 +79,7 @@ The app also implements **MVI (Model-View-Intent)** architecture to separate con
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/cat-breeds-app.git
+   git clone https://github.com/mhoseini967/CatAPI.git
    cd cat-breeds-app
 
 2. **Add your API Key**:
